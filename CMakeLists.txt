@@ -36,12 +36,18 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}" "./src")
 #----------------------------------------------------------------------
 # perftest gRPC Server
 #----------------------------------------------------------------------
-add_library(ni_grpc_sideband SHARED
+set(SIDEBAND_SRCS
   src/sideband_data.cc
   src/sideband_sockets.cc
   src/sideband_shared_memory.cc
-  src/sideband_rdma.cc
-  )
+)
+
+if(INCLUDE_SIDEBAND_RDMA)
+  list(APPEND SIDEBAND_SRCS src/sideband_rdmaa.cc)
+endif()
+
+add_library(ni_grpc_sideband ${SIDEBAND_SRCS})
+
 if (INCLUDE_SIDEBAND_RDMA)
   target_link_libraries(ni_grpc_sideband
     ${_REFLECTION}
